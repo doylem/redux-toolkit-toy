@@ -1,0 +1,7 @@
+button {
+  font-size: calc(10px + 2vmin);
+}
+
+.Buttons button {
+  margin: 5px;
+}
