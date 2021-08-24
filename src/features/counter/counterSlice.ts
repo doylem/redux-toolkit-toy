@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { RootState } from '../../store'
 interface CounterState {
   value: number
 }
@@ -26,6 +26,20 @@ const counterSlice = createSlice({
     },
   },
 })
+
+function timeout(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export const countDown = createAsyncThunk<void, void, { state: RootState }>(
+  'counter/countDown',
+  async (_, { dispatch, getState }) => {
+    while (getState().counter.value > 0) {
+      dispatch(decrement())
+      await timeout(1000)
+    }
+  }
+)
 
 export const { increment, decrement, incrementBy, decrementBy } = counterSlice.actions
 
