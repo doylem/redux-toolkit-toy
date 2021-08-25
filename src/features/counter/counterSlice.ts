@@ -5,9 +5,7 @@ interface CounterState {
   isCountingDown: boolean
 }
 
-function timeout(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
+const timeout = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const countDown = createAsyncThunk<void, { speed: number }, { state: RootState }>(
   'counter/countDown',
