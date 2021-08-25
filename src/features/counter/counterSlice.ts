@@ -2,10 +2,26 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store'
 interface CounterState {
   value: number
+  isCountingDown: boolean
 }
+
+function timeout(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export const countDown = createAsyncThunk<void, { speed: number }, { state: RootState }>(
+  'counter/countDown',
+  async ({ speed }, { dispatch, getState }) => {
+    while (getState().counter.value > 0) {
+      dispatch(decrement())
+      await timeout(speed)
+    }
+  }
+)
 
 const initialState: CounterState = {
   value: 0,
+  isCountingDown: false,
 }
 
 const counterSlice = createSlice({
@@ -25,21 +41,15 @@ const counterSlice = createSlice({
       state.value -= payload
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(countDown.pending, (state) => {
+      state.isCountingDown = true
+    })
+    builder.addCase(countDown.fulfilled, (state) => {
+      state.isCountingDown = false
+    })
+  },
 })
-
-function timeout(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-export const countDown = createAsyncThunk<void, void, { state: RootState }>(
-  'counter/countDown',
-  async (_, { dispatch, getState }) => {
-    while (getState().counter.value > 0) {
-      dispatch(decrement())
-      await timeout(1000)
-    }
-  }
-)
 
 export const { increment, decrement, incrementBy, decrementBy } = counterSlice.actions
 

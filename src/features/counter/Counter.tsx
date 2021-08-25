@@ -5,6 +5,7 @@ import './Counter.css'
 
 function App() {
   const count = useAppSelector((state) => state.counter.value)
+  const isCountingDown = useAppSelector((state) => state.counter.isCountingDown)
   const dispatch = useAppDispatch()
 
   return (
@@ -15,8 +16,9 @@ function App() {
         <button onClick={() => dispatch(decrement())}>-</button>
         <button onClick={() => dispatch(increment())}>+</button>
         <button onClick={() => dispatch(incrementBy(10))}>++</button>
-        <button onClick={() => dispatch(countDown())}>Count Down</button>
+        <button onClick={() => dispatch(countDown({ speed: 1000 }))}>Count Down</button>
       </p>
+      {isCountingDown && <p>Counting down...</p>}
     </>
   )
 }
